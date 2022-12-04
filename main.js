@@ -2114,10 +2114,6 @@ function listenOnReorderPlaylist(obj) {
   }
 
   let reOrderObj = JSON.parse(obj.state.val);
-
-  adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
-  adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
-
   if (
     !reOrderObj.currentIndex ||
     !reOrderObj.insertBefore ||
@@ -2125,6 +2121,9 @@ function listenOnReorderPlaylist(obj) {
   ) {
     return;
   }
+
+  adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
+  adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
 
   let id = idState.val;
   let owner = ownerState.val;
