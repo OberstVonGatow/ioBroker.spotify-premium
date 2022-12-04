@@ -2024,7 +2024,7 @@ function listenOnGetAuthorization() {
     redirect_uri: application.redirect_uri,
     state: state,
     scope:
-      "user-modify-playback-state user-read-playback-state user-read-currently-playing playlist-read-private",
+      "user-modify-playback-state user-read-playback-state user-read-currently-playing playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public",
   };
 
   let options = {
