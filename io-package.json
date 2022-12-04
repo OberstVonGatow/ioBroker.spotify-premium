@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "spotify-premium",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "news": {
       "1.2.2": {
         "en": "Fix potential crash cases reported by Sentry\nOptimize adapter stop behaviour",
@@ -113,10 +113,7 @@
       "pl": "kontroluj urządzenia spotify",
       "zh-cn": "控制spotify设备"
     },
-    "authors": [
-      "Lucky",
-      "Alexander Kose"
-    ],
+    "authors": ["Lucky", "Alexander Kose"],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "mode": "daemon",
@@ -124,11 +121,7 @@
     "materialize": true,
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.spotify-premium/master/admin/spotify-premium.png",
-    "keywords": [
-      "spotify",
-      "player",
-      "media"
-    ],
+    "keywords": ["spotify", "player", "media"],
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.spotify-premium/blob/master/README.md",
     "loglevel": "info",
     "type": "multimedia",
