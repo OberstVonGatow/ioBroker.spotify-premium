@@ -1013,7 +1013,7 @@ function createPlaylists(parseJson, autoContinue, addedList) {
         common: {
           name: "reorder this playlist",
           description: "{currentIndex:5, insertBefore:1 }",
-          type: "object",
+          type: "string",
           role: "json",
           read: false,
           write: true,
@@ -1458,7 +1458,7 @@ function createDevices(data) {
         prefix + ".isRestricted",
         false,
         "it is not possible to control restricted devices with the adapter",
-        "boolean"
+        "boolean"type
       ),
       createOrDefault(
         device,
@@ -2109,7 +2109,7 @@ function listenOnReorderPlaylist(obj) {
     return;
   }
 
-  let reOrderObj = obj.state.val;
+  let reOrderObj = JSON.parse(obj.state.val);
 
   adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
   adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
