@@ -1011,7 +1011,7 @@ function createPlaylists(parseJson, autoContinue, addedList) {
       cache.setValue(prefix + ".reorderThisList", {
         type: "state",
         common: {
-          name: "reorder this playlist",
+          name: "reorder this playlist with Object {currentIndex:x , insertBefore:y }",
           description: "{currentIndex:5, insertBefore:1 }",
           type: "string",
           role: "json",
@@ -2113,6 +2113,10 @@ function listenOnReorderPlaylist(obj) {
 
   adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
   adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
+
+  if (!reOrderObj.currentIndex || !reOrderObj.insertBefore) {
+    return;
+  }
 
   let id = idState.val;
   let owner = ownerState.val;
