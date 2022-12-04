@@ -1011,9 +1011,10 @@ function createPlaylists(parseJson, autoContinue, addedList) {
       cache.setValue(prefix + ".reorderThisList", false, {
         type: "state",
         common: {
-          name: "press to reorder this playlist",
-          type: "boolean",
-          role: "button",
+          name: "reorder this playlist",
+          description: "{currentIndex:5, insertBefore:1 }",
+          type: "object",
+          role: "json",
           read: false,
           write: true,
         },
@@ -2103,12 +2104,24 @@ function listenOnReorderPlaylist(obj) {
   const ownerState = cache.getValue(
     obj.id.slice(0, obj.id.lastIndexOf(".")) + ".owner"
   );
+
   if (!idState || !ownerState) {
     return;
   }
+
+  let reOrderObj = obj.state.val;
+
+  adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
+  adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
+
   let id = idState.val;
   let owner = ownerState.val;
-  return reorderPlaylist(id, owner);
+  return reorderPlaylist(
+    id,
+    owner,
+    reOrderObj.currentIndex,
+    reOrderObj.insertBefore
+  );
 }
 
 function listenOnDeviceList(obj) {
@@ -2605,72 +2618,39 @@ function listenOnHtmlDevices() {
   cache.setValue("html.devices", html);
 }
 
-function reorderPlaylist(playlist, owner) {
+function reorderPlaylist(playlist, owner, currentIndex, insertBefore) {
   if (isEmpty(owner)) {
     owner = application.userId;
   }
   if (isEmpty(playlist)) {
     return Promise.reject("no playlist no");
   }
+  if (isEmpty(currentIndex)) {
+    return Promise.reject("no current_index");
+  }
+  if (isEmpty(insertBefore)) {
+    return Promise.reject("no insert_before");
+  }
 
-  let trackListArray = [];
   let r = Promise.resolve();
 
-  r = r.then(() => {
-    trackListArray = cache.getValue(
-      `playlists.${shrinkStateName(owner + "-" + playlist)}.trackListArray`
+  return r.then(() => {
+    let send = {
+      range_start: currentIndex,
+      insert_before: insertBefore,
+      range_length: 1,
+    };
+    return sendRequest(
+      `/v1/playlists/${playlist}/tracks`,
+      "PUT",
+      JSON.stringify(send),
+      true
+    ).catch((err) =>
+      adapter.log.error(
+        `could not reorder playlist ${playlist} of user ${owner}; error: ${err}`
+      )
     );
   });
-
-  if (trackListArray.length == 0) {
-    adapter.log.error(`empty Tracklist for ${playlist} of user ${owner}`);
-    return Promise.reject("empty Tracklist");
-  }
-
-  let datesArray = [];
-  datesArray.push(new Date(trackListArray[0].addedAt));
-
-  for (let i = 1; i < trackListArray.length; i++) {
-    let currentAddedAtDate = new Date(trackListArray[i].addedAt);
-    let lastAddedAtDate = datesArray[i - 1];
-
-    if (currentAddedAtDate < lastAddedAtDate) {
-      datesArray.push(currentAddedAtDate);
-      continue;
-    }
-
-    let insertBeforeIndex = 0;
-    for (let j = 0; j < datesArray.length; j++) {
-      if (currentAddedAtDate > datesArray[j]) {
-        datesArray.splice(j, 0, currentAddedAtDate);
-        insertBeforeIndex = j;
-        break;
-      }
-    }
-
-    r.then(() => {
-      let send = {
-        range_start: i,
-        insert_before: insertBeforeIndex,
-        range_length: 1,
-      };
-      return sendRequest(
-        `/v1/playlists/${playlist}/tracks`,
-        "PUT",
-        JSON.stringify(send),
-        true
-      ).catch((err) =>
-        adapter.log.error(
-          `could not reorder playlist ${playlist} of user ${owner}; error: ${err}`
-        )
-      );
-    });
-  }
-
-  let idReorder = `playlists.${shrinkStateName(
-    owner + "-" + playlist
-  )}.reorderThisList`;
-  return new Promise(cache.setValue(idReorder, false));
 }
 
 //If started as allInOne/compact mode => return function to create instance
