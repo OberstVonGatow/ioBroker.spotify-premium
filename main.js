@@ -971,7 +971,7 @@ function createPlaylists(parseJson, autoContinue, addedList) {
   let fn = function (item) {
     let playlistName = loadOrDefault(item, "name", "");
     if (isEmpty(playlistName)) {
-      adapter.log.warn("empty playlist name " + item);
+      adapter.log.warn("empty playlist name " + JSON.stringify(item));
       return Promise.reject("empty playlist name");
     }
     let playlistId = loadOrDefault(item, "id", "");
