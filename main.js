@@ -1458,7 +1458,7 @@ function createDevices(data) {
         prefix + ".isRestricted",
         false,
         "it is not possible to control restricted devices with the adapter",
-        "boolean"type
+        "boolean"
       ),
       createOrDefault(
         device,
