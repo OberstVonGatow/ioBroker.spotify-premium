@@ -2662,13 +2662,11 @@ function reorderPlaylist(playlist, owner, currentIndex, insertBefore) {
       "PUT",
       JSON.stringify(send),
       true
-    )
-      .then(() => pollPlaylistApi())
-      .catch((err) =>
-        adapter.log.error(
-          `could not reorder playlist ${playlist} of user ${owner}; error: ${err}`
-        )
-      );
+    ).catch((err) =>
+      adapter.log.error(
+        `could not reorder playlist ${playlist} of user ${owner}; error: ${err}`
+      )
+    );
   });
 }
 
