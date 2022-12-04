@@ -2113,11 +2113,13 @@ function listenOnReorderPlaylist(obj) {
     return;
   }
 
+  adapter.log.debug("object value : " + obj.state.val);
   let reOrderObj = JSON.parse(obj.state.val);
+
   if (
     !reOrderObj.currentIndex ||
     !reOrderObj.insertBefore ||
-    (reOrderObj.currentIndex === 0 && reOrderObj.insertBefore === 0)
+    (reOrderObj.currentIndex === reOrderObj.insertBefore)
   ) {
     return;
   }
@@ -2182,7 +2184,7 @@ function listenOnPlay() {
     true
   )
     .catch((err) => adapter.log.error("could not execute command: " + err))
-    .then(() => setTimeout(() => !stopped && pollStatusApi(), 1000));
+    .then(() => setTimeout(() => !stopped && pollStatusApi(), 1000));if (
 }
 
 function listenOnPause() {
