@@ -1008,18 +1008,22 @@ function createPlaylists(parseJson, autoContinue, addedList) {
         },
         native: {},
       }),
-      cache.setValue(prefix + ".reorderThisList", {
-        type: "state",
-        common: {
-          name: "reorder this playlist with Object {currentIndex:x , insertBefore:y }",
-          description: "{currentIndex:5, insertBefore:1 }",
-          type: "string",
-          role: "json",
-          read: false,
-          write: true,
-        },
-        native: {},
-      }),
+      cache.setValue(
+        prefix + ".reorderThisList",
+        `{"currentIndex":0, "insertBefore":0 }`,
+        {
+          type: "state",
+          common: {
+            name: "reorder this playlist with Object {currentIndex:x , insertBefore:y }",
+            description: "{currentIndex:5, insertBefore:1 }",
+            type: "string",
+            role: "json",
+            read: false,
+            write: true,
+          },
+          native: {},
+        }
+      ),
       createOrDefault(item, "id", prefix + ".id", "", "playlist id", "string"),
       createOrDefault(
         item,
@@ -2114,7 +2118,11 @@ function listenOnReorderPlaylist(obj) {
   adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
   adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
 
-  if (!reOrderObj.currentIndex || !reOrderObj.insertBefore) {
+  if (
+    !reOrderObj.currentIndex ||
+    !reOrderObj.insertBefore ||
+    (reOrderObj.currentIndex === 0 && reOrderObj.insertBefore === 0)
+  ) {
     return;
   }
 
