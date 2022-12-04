@@ -2114,27 +2114,31 @@ function listenOnReorderPlaylist(obj) {
   }
 
   adapter.log.debug("object value : " + obj.state.val);
+
+  let currentIndex = 0;
+  let insertBefore = 0;
+
   let reOrderObj = JSON.parse(obj.state.val);
 
-  if (
-    !reOrderObj.currentIndex ||
-    !reOrderObj.insertBefore ||
-    reOrderObj.currentIndex === reOrderObj.insertBefore
-  ) {
+  if (reOrderObj.currentIndex) {
+    currentIndex = reOrderObj.currentIndex;
+  }
+  if (reOrderObj.insertBefore) {
+    insertBefore = reOrderObj.insertBefore;
+  }
+
+  if (currentIndex === 0 && insertBefore === 0) {
     return;
   }
 
-  adapter.log.debug("currentIndex: " + reOrderObj.currentIndex);
-  adapter.log.debug("insertBefore: " + reOrderObj.insertBefore);
-
   let id = idState.val;
   let owner = ownerState.val;
-  return reorderPlaylist(
-    id,
-    owner,
-    reOrderObj.currentIndex,
-    reOrderObj.insertBefore
+
+  adapter.log.info(
+    `Reorder: ${id} currentIndex ${currentIndex} insertBefore ${insertBefore}`
   );
+
+  return reorderPlaylist(id, owner, currentIndex, insertBefore);
 }
 
 function listenOnDeviceList(obj) {
@@ -2658,11 +2662,13 @@ function reorderPlaylist(playlist, owner, currentIndex, insertBefore) {
       "PUT",
       JSON.stringify(send),
       true
-    ).catch((err) =>
-      adapter.log.error(
-        `could not reorder playlist ${playlist} of user ${owner}; error: ${err}`
-      )
-    );
+    )
+      .then(() => pollPlaylistApi())
+      .catch((err) =>
+        adapter.log.error(
+          `could not reorder playlist ${playlist} of user ${owner}; error: ${err}`
+        )
+      );
   });
 }
 
