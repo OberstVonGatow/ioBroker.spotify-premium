@@ -1008,7 +1008,7 @@ function createPlaylists(parseJson, autoContinue, addedList) {
         },
         native: {},
       }),
-      cache.setValue(prefix + ".reorderThisList", false, {
+      cache.setValue(prefix + ".reorderThisList", {
         type: "state",
         common: {
           name: "reorder this playlist",
